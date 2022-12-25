@@ -14,5 +14,11 @@ namespace Bff.Core.OutputPorts
         }
 
         public IList<SentenceSentimentResult> Sentences { get; }
+
+        public string GetNegativeOpinionsDescription()
+        {
+            var negativeOpinions = Sentences.SelectMany(s => s.Opinions.Where(o => o.Sentiment == Sentiment.Negative).Select(o => o.Text)).ToList();
+            return string.Join(", ", negativeOpinions.ToArray(), 0, negativeOpinions.Count - 1) + ", and " + negativeOpinions.LastOrDefault();
+        }
     }
 }
