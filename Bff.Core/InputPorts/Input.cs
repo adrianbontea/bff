@@ -8,7 +8,7 @@ namespace Bff.Core.InputPorts
 {
     public class Input
     {
-        public Input(string userId, string message, Stream faceImage)
+        public Input(string userId, string message, Stream faceImage = null)
         {
             UserId = userId;
             Message = message;

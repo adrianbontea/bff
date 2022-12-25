@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Bff.Service";
+
+package Bff;
+
+service Bff {
+  rpc Interact (Request) returns (Response);
+}
+
+message Request {
+  string Text = 1;
+}
+
+message Response {
+  string Text = 1;
+}

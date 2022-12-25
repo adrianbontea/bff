@@ -10,6 +10,7 @@ namespace Bff.Core.OutputPorts
     {
         Positive,
         Negative,
+        Neutral,
         Mixed
     }
 }
