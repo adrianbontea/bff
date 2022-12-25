@@ -27,21 +27,24 @@ while (input != "QUIT")
 
 var devices = new CaptureDevices();
 
-var descriptor = devices.EnumerateDescriptors().First();
+var descriptor = devices.EnumerateDescriptors().FirstOrDefault();
 
-using var device = await descriptor.OpenAsync(
-    descriptor.Characteristics[0],
-    async bufferScope =>
-    {
-        byte[] image = bufferScope.Buffer.ExtractImage();
+if (descriptor != null)
+{
+    using var device = await descriptor.OpenAsync(
+        descriptor.Characteristics.First(),
+        async bufferScope =>
+        {
+            byte[] image = bufferScope.Buffer.ExtractImage();
 
-        var ms = new MemoryStream(image);
-        using var fs = new FileStream("D:\\test.jpg", FileMode.Create);
-        ms.WriteTo(fs);
-        await fs.FlushAsync();
-    });
+            var ms = new MemoryStream(image);
+            using var fs = new FileStream("D:\\test.jpg", FileMode.Create);
+            ms.WriteTo(fs);
+            await fs.FlushAsync();
+        });
 
 
-await device.StartAsync();
-await Task.Delay(1000);
-await device.StopAsync();
+    await device.StartAsync();
+    await Task.Delay(1000);
+    await device.StopAsync();
+}
