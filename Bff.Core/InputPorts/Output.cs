@@ -8,11 +8,14 @@ namespace Bff.Core.InputPorts
 {
     public class Output
     {
-        public Output(string message)
+        public Output(string message, bool shouldCaptureFaceImage = false)
         {
             Message = message;
+            ShouldCaptureFaceImage = shouldCaptureFaceImage;
         }
 
         public string Message { get; }
+
+        public bool ShouldCaptureFaceImage { get; }
     }
 }
