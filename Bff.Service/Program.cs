@@ -1,8 +1,11 @@
 ﻿using System.Net.Http.Headers;
+using Azure;
+using Azure.AI.TextAnalytics;
 using Bff.Core.InputPorts;
 using Bff.Core.OutputPorts;
 using Bff.Service.Adapters;
 using Bff.Service.Services;
+using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
@@ -18,6 +21,12 @@ builder.Services.AddGrpc();
 builder.Services.Configure<OpenAiOptions>(
     builder.Configuration.GetSection(OpenAiOptions.OpenAi));
 
+builder.Services.Configure<AzureFaceOptions>(
+    builder.Configuration.GetSection(AzureFaceOptions.AzureFace));
+
+builder.Services.Configure<AzureLanguageOptions>(
+    builder.Configuration.GetSection(AzureLanguageOptions.AzureLanguage));
+
 builder.Services.AddHttpClient<IConversationService, OpenAiConversationService>((sp, client) =>
 {
     var options = sp.GetRequiredService<IOptions<OpenAiOptions>>().Value;
@@ -28,6 +37,16 @@ builder.Services.AddHttpClient<IConversationService, OpenAiConversationService>(
 
 builder.Services.AddTransient<IEmotionService, AzureEmotionService>();
 builder.Services.AddTransient<IBffService, Bff.Core.BffService>();
+builder.Services.AddSingleton<IFaceClient, FaceClient>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<AzureFaceOptions>>().Value;
+    return new FaceClient(new ApiKeyServiceClientCredentials(options.Key)) { Endpoint = options.Endpoint };
+});
+builder.Services.AddSingleton<TextAnalyticsClient>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<AzureLanguageOptions>>().Value;
+    return new TextAnalyticsClient(new Uri(options.Endpoint), new AzureKeyCredential(options.Key));
+});
 
 var app = builder.Build();
 

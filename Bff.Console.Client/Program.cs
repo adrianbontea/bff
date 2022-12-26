@@ -19,32 +19,40 @@ while (input != "QUIT")
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine(response.Text);
 
+    if(response.ShouldCaptureFaceImage == true)
+    {
+        var faceImage = await CaptureFaceImageAsync();
+        //TO DO: Adjust gRPC Request model in proto, server and client-side implementation to be able to send the image content.
+    }
+
     Console.ForegroundColor = ConsoleColor.White;
     input = Console.ReadLine();
 }
 
 // Capture face image POC
 
-var devices = new CaptureDevices();
-
-var descriptor = devices.EnumerateDescriptors().FirstOrDefault();
-
-if (descriptor != null)
+async Task<Stream> CaptureFaceImageAsync()
 {
-    using var device = await descriptor.OpenAsync(
-        descriptor.Characteristics.First(),
-        async bufferScope =>
-        {
-            byte[] image = bufferScope.Buffer.ExtractImage();
+    var result = new MemoryStream();
+    var devices = new CaptureDevices();
 
-            var ms = new MemoryStream(image);
-            using var fs = new FileStream("D:\\test.jpg", FileMode.Create);
-            ms.WriteTo(fs);
-            await fs.FlushAsync();
-        });
+    var descriptor = devices.EnumerateDescriptors().FirstOrDefault();
+
+    if (descriptor != null)
+    {
+        using var device = await descriptor.OpenAsync(
+            descriptor.Characteristics.First(),
+             bufferScope =>
+            {
+                byte[] image = bufferScope.Buffer.ExtractImage();
+                result = new MemoryStream(image);
+            });
 
 
-    await device.StartAsync();
-    await Task.Delay(1000);
-    await device.StopAsync();
+        await device.StartAsync();
+        await Task.Delay(1000);
+        await device.StopAsync();
+    }
+
+    return result;
 }

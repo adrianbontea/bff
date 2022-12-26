@@ -9,8 +9,8 @@ namespace Bff.Core.OutputPorts
     public enum Sentiment
     {
         Positive,
-        Negative,
         Neutral,
+        Negative,
         Mixed
     }
 }

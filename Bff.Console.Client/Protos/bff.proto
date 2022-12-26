@@ -4,6 +4,8 @@ option csharp_namespace = "Bff.Console.Client";
 
 package Bff;
 
+import "google/protobuf/wrappers.proto";
+
 service Bff {
   rpc Interact (Request) returns (Response);
 }
@@ -14,4 +16,5 @@ message Request {
 
 message Response {
   string Text = 1;
+  google.protobuf.BoolValue ShouldCaptureFaceImage = 2;
 }

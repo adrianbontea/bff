@@ -19,7 +19,7 @@ namespace Bff.Service.Services
         public async override Task<Response> Interact(Request request, ServerCallContext context)
         {
             var output = await _bffService.InteractAsync(new Input(Guid.NewGuid().ToString(), request.Text));
-            return new Response { Text = output.Message };
+            return new Response { Text = output.Message, ShouldCaptureFaceImage = output.ShouldCaptureFaceImage };
         }
     }
 }

@@ -12,10 +12,10 @@ namespace Bff.Core.OutputPorts
 
         public Sentiment Sentiment { get; set; }
 
-        public decimal PositiveScore { get; set; }
+        public double PositiveScore { get; set; }
 
-        public decimal NegativeScore { get; set; }
+        public double NegativeScore { get; set; }
 
-        public decimal NeutralScore { get; set; }
+        public double NeutralScore { get; set; }
     }
 }
